@@ -16,3 +16,12 @@ services:
     container_name: consulserver03
     hostname: consulserver03
     command: ['tail', '-f', '/dev/null']
+  
+  consulclient01:
+    image: consul:1.10
+    container_name: consulclient01
+    hostname: consulclient01
+    command: ['tail', '-f', '/dev/null']
+    # compartilhando o diretório clients/consul01 para ficar no diretório de config para quando o consul subir
+    volumes:
+      - ./clients/consul01:/etc/consul.d
