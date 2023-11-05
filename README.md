@@ -5,7 +5,7 @@ A repository for study purposes: an essay using consul to show some of its capab
 
 ## Procedure to create a Cluster containing 3 servers.
 
-### Command to generate the server (expecting to be joined to other N-1 servers) inside the consul number0X container using its inet address (xxx.xx.x.x)
+### Command to generate the server (expecting to be joined to other N-1 servers) inside the consul number0X's container using its inet address (xxx.xx.x.x)
 `$ consul agent -server -bootstrap-expect=N -node=consulserver02 -bind=xxx.xx.x.x -data-dir=/var/lib/consul -config-dir=/etc/consul.d`
 You need to run `$ ifconfig` to obtain the inet address inside the desired container.
 
