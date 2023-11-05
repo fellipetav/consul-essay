@@ -25,3 +25,12 @@ services:
     # compartilhando o diretório clients/consul01 para ficar no diretório de config para quando o consul subir
     volumes:
       - ./clients/consul01:/etc/consul.d
+  
+  consulclient02:
+    image: consul:1.10
+    container_name: consulclient02
+    hostname: consulclient02
+    command: ['tail', '-f', '/dev/null']
+    # compartilhando o diretório clients/consul01 para ficar no diretório de config para quando o consul subir
+    volumes:
+      - ./clients/consul02:/etc/consul.d
