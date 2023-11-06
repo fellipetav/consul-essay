@@ -76,7 +76,7 @@ Check https://developer.hashicorp.com/consul/api-docs/catalog
 
 The output will be for example `{"consul":[],"nginx":["web"]}`.
 
-# PART 4: registering a second service
+# PART 4: registering a second service using retry join
 The idea is registering a second service having the same name but obviously a differente id to demonstrate the Consul capability of identifying each service.
 
 ## Register the second service and upload it
@@ -112,3 +112,29 @@ After we register our services, we can pass metadata (server information such as
 Registered machines from a local search to the client:
 ![registered machines](image-4.png)
 Each client has all information the server has.
+
+# PART 5: health check
+The idea is trying the "Health check" Consul feature (see more at https://developer.hashicorp.com/consul/docs/services/configuration/checks-configuration-reference).
+
+We're gonna add a Consul script check within the client which is responsible to registering the service 01.
+
+Since we only have a health check script at service 01, if it has a bad response (e.g. out of service or critical), we'll not expect see it in our answer section after we run a Dig command.
+
+## Procedure to add a check script within one of my services
+Choose one of your services (e.g. "clients/consul01/services.json") and add a simple check script on it (get the script on Consul docs or see the commit related to this part).
+
+## Testing the health check feature
+Inside the container where your consulclient01 is, run `$ dig @localhost -p 8600 web.nginx.service.consul` to check the answer section.
+
+![Answer section before adding the check script](image-5.png)
+
+Now, run `$ consul reload` to take the changes in "clients/consul01/services.json" into account.
+
+Inside the container where you registered the consulclient01, you'll see the logs regarding the health check.
+
+![Logs from consulclient01](image-6.png)
+
+Since the check is warning the Nginx service is critical, we should not see this service available in the answer section after a second Dig comand.
+So, go into a typeable terminal instance inside any agent container and run `$ dig @localhost -p 8600 web.nginx.service.consul`. You'll see only the other service is available:
+
+![Dig output taking the health check into account](image-7.png)
