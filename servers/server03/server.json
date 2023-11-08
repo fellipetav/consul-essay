@@ -7,5 +7,10 @@
         "172.23.0.5",
         "172.23.0.3"
     ],
-    "node_name": "consulserver03"
+    "node_name": "consulserver03",
+    "encrypt": "cDjGK9jxwVtXTX7twJN3xcN22Fr4FFKFJvl1A3ZJWNk=",
+    "client_addr": "0.0.0.0",
+    "ui_config": {
+        "enabled": true
+    }
 }

@@ -22,6 +22,8 @@ services:
     command: ['tail', '-f', '/dev/null']
     volumes:
       - ./servers/server03:/etc/consul.d
+    ports:
+      - "8500:8500"
   
   consulclient01:
     image: consul:1.10
