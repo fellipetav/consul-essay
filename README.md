@@ -138,3 +138,48 @@ Since the check is warning the Nginx service is critical, we should not see this
 So, go into a typeable terminal instance inside any agent container and run `$ dig @localhost -p 8600 web.nginx.service.consul`. You'll see only the other service is available:
 
 ![Dig output taking the health check into account](image-7.png)
+
+
+# PART 6: Learning how to sync servers via files in the aim of automate the servers registering process
+
+After create your "servers/server01/server.json" and change your "docker-compose.yaml", you need to kill your consulserver01 container and redeploy it (do not forget of building your container, since you changed your "docker-compose.yaml").
+
+After deploy it, inside that container, run:
+`$ consul agent -config-dir=/etc/consul.d` (it's going to read your "servers/server01/server.json" file and up your server following your defined settings).
+
+# PART 7: Encrypting the connection between consul servers
+
+The idea now is to demonstrate the Consul's capability of encrypting the connection between the consul servers. It can encrypt the Membership connection or via TLS by means of a certificate created by one of the clients/servers. We'll practice the second method.
+
+## Procedure to create a certificate from some consulserver
+You'll need a key/certificate to define an encryption key within your `server.json`.
+Let's create a key from our consulserver01. To do that, run:
+`$ consul keygen`
+
+Now, all servers which have that key value defined within their respective `server.json` will be allowed to join the cluster and consequently only them will be capable of listen information from the clients/servers.
+
+After that, try to restart your agents using `$ consul agent -config-dir=/etc/consul.d` (remember after Part 6, our command is shorter thanks to the automation via sync between server files).
+
+After run that in all your 3 servers, you'll see the third one (the only one without the encryption key defined in its `server.json`) will fail the join.
+
+![Encryption test](image-8.png)
+
+If you run `$ consul members` inside the server 01 or 02's containers, you'll have:
+
+![consul members output](image-9.png)
+
+If you do that insithe the server 03's container (the one without the encryption key), you'll have:
+
+![consul members output in server03](image-10.png)
+
+## Trying to listen to information via TCP eth0
+Install tcpdump
+`$ apk add tcpdump`
+
+Inside the consulserver01, run `$ tcpdump -i eth0 -an port 8301 -A`.
+
+See how everything is encrypted:
+
+![Information encrypted](image-11.png)
+
+
